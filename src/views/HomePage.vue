@@ -1,15 +1,14 @@
 <template>
     <div class="home-container">
       <div class="home-title">
-        <div class="title-img">
-
-        </div>
         <div class="title-text">
-          Rollup
+          JK Rollup
         </div>
       </div>
       
-      
+      <div class="home-subtitle">
+        A Technological and Social Convergence
+      </div>
     <div class="dev-text">
       In Development
     </div>
@@ -60,6 +59,18 @@
       animation: imgFadeIn 2s ease-in forwards, textglow 5s infinite;
       animation-delay: 5s, 7s;
     }
+
+    .home-subtitle{
+      
+      margin-top: 100px;
+      color:white;
+      font-family: 'Exo';
+      font-size: 1.2em;
+      font-weight: bold;
+      opacity: 0;
+      animation: imgFadeIn 2s ease-in forwards;
+      animation-delay: 3s;
+    }
     .home-title{
       display : flex;
       flex-direction: row;
@@ -92,7 +103,6 @@
       animation: imgFadeIn 3s ease-in forwards;
       
       -webkit-text-stroke: .03em white;
-      animation-delay: 2s;
     }
 
     @keyframes textglow {
@@ -110,11 +120,6 @@
       to {
         opacity: 1;
       }
-    }
-    .home-subtitle{
-      font-size: 2em;
-      margin-bottom: 50px;
-      color:white;
     }
     .ats-image{
       
