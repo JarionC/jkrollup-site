@@ -7,7 +7,7 @@
       </div>
       
       <div class="home-subtitle">
-        A Technological and Social Convergence
+        A Technological Convergence
       </div>
     <div class="dev-text">
       In Development
