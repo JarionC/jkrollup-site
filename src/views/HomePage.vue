@@ -6,9 +6,6 @@
         </div>
       </div>
       
-      <div class="home-subtitle">
-        A Technological Convergence
-      </div>
     <div class="dev-text">
       In Development
     </div>
