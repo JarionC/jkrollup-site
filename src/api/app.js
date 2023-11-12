@@ -5,7 +5,7 @@ const apiClient = axios.create({
   withCredentials: false,
   headers: {
     Accept: 'application/json',
-    'Content-Type': 'application/json'
+    'Content-Type': 'multipart/form-data'
   }
 });
 
@@ -47,6 +47,11 @@ export default {
     formData.append("phone", formPhone);
     formData.append("message", formMessage);
 
-    return apiClient.post('/contact', formData);
+    return apiClient.post('/contact', formData, {
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data'
+      }
+    });
   }
 };
