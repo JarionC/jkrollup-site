@@ -32,7 +32,17 @@ export default {
     formData.append("notes", formNotes);
     formData.append("file", formFile);
 
-    return apiClient.post('/customrequest',formData)
+    if(formFile){
+      
+      return apiClient.post('/customrequest',formData,{
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      })
+    }
+    else  {
+      return apiClient.post('/customrequest',formData)
+    }
   },
 
   sendContact(formName, formEmail, formPhone, formMessage) {
