@@ -4,7 +4,7 @@
         <div class="home-title">
           <div class="title-img"></div>
           <div class="title-text">
-            Rollup
+            Rollup ATS
           </div>
         </div>
         <div class="opening-text">

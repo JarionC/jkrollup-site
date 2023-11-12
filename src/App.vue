@@ -1,14 +1,21 @@
 <template>
   <div id="app">
-    <router-view />
+    <div class="site-container">
+      <Navbar/>
+      <router-view />
+      <Footer/>
+    </div>
   </div>
 </template>
 
 <script>
-import NavBar from './components/NavBar';
+import Navbar from './components/NavBar';
 import store from './store';
+import Footer from './components/FooterView';
 export default {
   components: {
+    Navbar,
+    Footer
   },
 };
 </script>
@@ -35,5 +42,13 @@ body{
   width:100%;
       height:100%;
       box-sizing: border-box;
+  display:flex;
+  flex-direction:column;
+
+}
+.site-container{
+  height:100%;
+  display:flex;
+  flex-direction: column;
 }
 </style>
