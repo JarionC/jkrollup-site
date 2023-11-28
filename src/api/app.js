@@ -20,6 +20,96 @@ export default {
     return apiClient.post(`/registration/${registrationId}`, referer);
   },
 
+  createProduct(product){
+
+    var formData = new FormData();
+
+    formData.append("name", product.name);
+    formData.append("displayName", product.displayName);
+    formData.append("available", product.available);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("tags", product.tags);
+    formData.append("imageUrl", product.imageUrl);
+    formData.append("thumbnailUrl", product.thumbnailUrl);
+    formData.append("dimensions", product.dimensions);
+    formData.append("material", product.material);
+    formData.append("weight", product.weight);
+    formData.append("visible", product.visible);
+
+    return apiClient.post('/product/create', formData);
+  },
+
+  getProduct(productId){
+    return apiClient.get(`/product/product/${productId}`);
+  },
+
+  getProducts(){
+    return apiClient.get(`/product/products/`);
+  },
+
+  updateProduct(product){
+    var formData = new FormData();
+
+    formData.append("name", product.name);
+    formData.append("displayName", product.displayName);
+    formData.append("available", product.available);
+    formData.append("price", product.price);
+    formData.append("description", product.description);
+    formData.append("tags", product.tags);
+    formData.append("imageUrl", product.imageUrl);
+    formData.append("thumbnailUrl", product.thumbnailUrl);
+    formData.append("dimensions", product.dimensions);
+    formData.append("material", product.material);
+    formData.append("weight", product.weight);
+    formData.append("visible", product.visible);
+
+    return apiClient.post(`/product/update/${product.productId}`, formData);
+  },
+
+  updateProductByProp(productId, propName, propValue){
+    
+    var formData = new FormData();
+
+    formData.append("propName", propName);
+    formData.append("propValue", propValue);
+    
+    return apiClient.post(`/product/updateByProp/${productId}`, formData);
+  },
+
+  createOrder(order){
+    return apiClient.post('/order/create', order);
+  },
+
+  getOrder(orderId){
+    return apiClient.get(`/order/order/${orderId}`);
+  },
+
+  getOrders(){
+    return apiClient.get(`/order/orders/`);
+  },
+
+  updateOrder(orderId, order){
+    return apiClient.post(`/order/update/${orderId}`, order);
+  },
+
+  updateOrderByProp(orderId, propName, propValue){
+    
+    var formData = new FormData();
+
+    formData.append("propName", propName);
+    formData.append("propValue", propValue);
+    return apiClient.post(`/order/updateByProp/${orderId}`, formData);
+  },
+
+  adminLogin(username, password){
+    var formData = new FormData();
+
+    formData.append("username", username);
+    formData.append("password", password);
+
+    return apiClient.post("/admin/login", formData);
+  },
 
   sendCustomRequest(formName, formEmail, formPhone, formBudget, formDate, formNotes, formFile) {
     var formData = new FormData();

@@ -9,6 +9,8 @@ import AboutView from './views/AboutUs';
 import RegistrationView from './views/RegistrationView';
 import CustomRequest from './views/printing/CustomRequest';
 import ProductsView from './views/printing/ProductsView';
+import AdminLogin from './views/admin/AdminLogin';
+import AdminControls from './views/admin/AdminControls';
 
 Vue.use(Router);
 
@@ -25,7 +27,10 @@ const router = new Router({
     { path: '/ats', component: ATS, name: 'ats' },
     { path: '/sign-in', component: SignIn, name: 'signin' },
     { path: '/sign-up', component: SignUp, name: 'signup' },
+    { path: '/admin', component: AdminLogin, name: 'admin' },
+    { path: '/admin/controls', component: AdminControls, name: 'admincontrols' },
     { path: '/registration/:registrationId', component: RegistrationView, name: 'registration' }
+
   ]
 });
 
