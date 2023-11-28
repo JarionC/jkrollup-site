@@ -46,6 +46,8 @@ export default {
             self.loadingProducts = false;
         }).catch( function (error){
             console.error(error);
+            self.products = [];
+            self.productListMessage = self.products.length + " products found.";
             self.loadingProducts = false;
         })
       },
