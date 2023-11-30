@@ -32,18 +32,18 @@ export default new Vuex.Store({
       Cookies.set('cart', JSON.stringify(cart), { expires: 1/12 });
     },
     CART_ADD(state, cartItem){
-      var cartItemIndex = state.cart.findIndex( x => x.name === cartItem.name);
+      var cartItemIndex = state.cart.findIndex( x => x.productId === cartItem.productId);
       if(cartItemIndex == -1){
         state.cart.push(cartItem);
       }
       else{
-        state.cart[cartItemIndex] = cartItem;
+        state.cart[cartItemIndex].quantity = state.cart[cartItemIndex].quantity + cartItem.quantity;
       }
       Cookies.set('cart', JSON.stringify(state.cart), { expires: 1/12 });
     },
 
     CART_REMOVE(state, cartItem){
-      var cartItemIndex = state.cart.findIndex( x => x.name === cartItem.name);
+      var cartItemIndex = state.cart.findIndex( x => x.productId === cartItem.productId);
 
       if(cartItemIndex != -1){
         state.cart.splice(cartItemIndex, 1);
@@ -65,7 +65,7 @@ export default new Vuex.Store({
       if(!state.cart || state.cart.length == 0){
         return 0;
       }
-      var quantityArray = state.cart.map(p => p.price);
+      var quantityArray = state.cart.map(p => (p.price * p.quantity));
 
       var sum = quantityArray.reduce((accumulator, currentValue) => {
         return accumulator + currentValue
@@ -103,6 +103,9 @@ export default new Vuex.Store({
     },
     removeCartItem({commit}, cartItem){
       commit('CART_REMOVE', cartItem);
+    },
+    clearCart({commit}){
+      commit('CLEAR_CART');
     }
 
   }

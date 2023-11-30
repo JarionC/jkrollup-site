@@ -9,6 +9,7 @@ import AboutView from './views/AboutUs';
 import RegistrationView from './views/RegistrationView';
 import CustomRequest from './views/printing/CustomRequest';
 import ProductsView from './views/printing/ProductsView';
+import ProductView from './views/products/ProductView';
 import AdminLogin from './views/admin/AdminLogin';
 import AdminControls from './views/admin/AdminControls';
 
@@ -22,6 +23,7 @@ const router = new Router({
     { path: '/home', component: HomePage,  name: 'home' },
     { path: '/customrequest', component: CustomRequest,  name: 'customrequest' },
     { path: '/products', component: ProductsView,  name: 'products' },
+    { path: '/products/:productId', component: ProductView,  name: 'product' },
     { path: '/contact', component: ContactView,  name: 'contact' },
     { path: '/about', component: AboutView,  name: 'about' },
     { path: '/ats', component: ATS, name: 'ats' },

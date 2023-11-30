@@ -27,7 +27,6 @@ html{
 }
 body{
       width:100%;
-      height:100%;
       background-color: black;
       box-sizing: border-box;
       padding:0;
@@ -47,8 +46,10 @@ body{
 
 }
 .site-container{
-  height:100%;
+  height:auto;
+  min-height:100vh;
   display:flex;
+  justify-content: space-between;
   flex-direction: column;
 }
 </style>

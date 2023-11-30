@@ -2,12 +2,23 @@
     <div class="home-container">
       <div class="top-section">
         <div class="home-title">
-            <div class="print-line"></div>
+            <!--<div class="print-line"></div>-->
           <!--<div class="title-img"></div>-->
           <div class="title-text">
-            JK Rollup
+            <span>J</span>
+            <span>K</span>
+            <span style="margin-left:.25em;">R</span>
+            <span>o</span>
+            <span>l</span>
+            <span>l</span>
+            <span>u</span>
+            <span>p</span>
+          </div>
+          <div class="fire">
+            <div v-for="part in particles" :key="part.pid" class="particle"></div>
           </div>
         </div>
+        
       </div>
       
     </div>
@@ -20,14 +31,34 @@
 
   export default {
     name: 'HomePage',
+    data() {
+      return {
+        particles: []
+      }
+    },
     props: {
-      msg: String
+      msg: String,
+    },
+    created() {
+      for(var i = 0; i < 100; i++){
+        this.particles.push({
+          pid: i
+        })
+      }
     }
   }
   </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
-  <style scoped>
+  <style lang="scss" scoped>
+    $fireColor: #48abe0;
+    $fireColorT: rgba(255,80,0,0);
+    $dur: 1s;
+    $blur: 0.02em;
+    $fireRad: 3em;
+    $parts: 100;
+    $partSize: 5em;
+
     @font-face{
       font-family: "Exo";
       src: 
@@ -51,7 +82,7 @@
       justify-content: center;
       align-items: center;
       color:white;
-      height:100%;
+      height:calc(100vh - 72px);
     }
 
     .top-section{
@@ -65,10 +96,10 @@
       align-items: center;
       height:100%;
       position:relative;
-      background-image: url('../assets/scrolleditpage.png');
+      /*background-image: url('../assets/scrolleditpage.png');
       background-size: 80%;
       background-repeat: no-repeat;
-      background-position: center center;
+      background-position: center center;*/
     }
 
 
@@ -143,18 +174,19 @@
       animation-delay: 3s;
     }
     .home-title{
+      display: flex;
+      justify-content: center;
       box-sizing: border-box;
-      margin-bottom:100px;
+      margin-bottom:10em;
       flex-wrap: nowrap;
       vertical-align:bottom;
       position:relative;
-      height:6.5vmax;
-      width: 22vmax;
-      overflow:hidden;
-      animation: titleBuild 12s ease-in forwards;
+      width: 35vmax;
+      overflow:visible;
+      /*animation: titleBuild 12s ease-in forwards;*/
     }
 
-    .print-line{
+    /*.print-line{
         height: 1px;
         width: 100%;
         position:absolute;
@@ -165,7 +197,7 @@
   
       animation: print 12s ease-in forwards;
 
-    }
+    }*/
     .title-img{
       background-image: url('../img/jk_logo_white.png');
       background-repeat: no-repeat;
@@ -177,19 +209,65 @@
       animation: imgFadeIn 2s ease-in forwards;
     }
     .title-text{
+      display:flex;
+      flex-direction: row;
       font-size:5vmax;
       font-weight:bold;
       font-family: 'Exo';
       color:transparent;
       align-items: center;
-      overflow:hidden;
+      overflow:visible;
       -webkit-text-stroke: .03em white;
       vertical-align:bottom;
       position:absolute;
-      bottom: 0px;
+      bottom: 300px;
     }
 
-    @keyframe printglow {
+    $spans: 8;
+
+    
+    .title-text > span{
+      display:inline-block;
+      @for $s from 1 through $spans {
+        &:nth-of-type(#{$s}) {
+          margin-bottom: ((100 * random()) - 400) + px;
+          opacity: .01 * random() - .5;
+          filter: blur(.3 * random() + em);
+          -webkit-filter: blur(.3 * random() + em);
+        }
+      }
+      animation: titleResolve 4s forwards;
+      animation-delay: 1s;
+    }
+
+    @keyframes titleResolve{
+      0%{
+
+      }
+      100%{
+        margin-bottom: 0px;
+        opacity: 1;
+        filter: blur(0em);
+        -webkit-filter: blur(0em);
+      }
+    }
+
+    @keyframes smokey {
+      0%{
+        filter: blur(.1em);
+        -webkit-filter: blur(.1em);
+      }
+      50%{
+        filter: blur(.2em);
+        -webkit-filter: blur(.2em);
+      }
+      100%{
+        filter: blur(.1em);
+        -webkit-filter: blur(.1em);
+      }
+    }
+
+    @keyframes printglow {
         0%{
             box-shadow: 0 0 8px 8px #48abe0;
             
@@ -279,6 +357,58 @@
     }
 
 
+
+
+    .fire {
+      font-size: 24px;
+      filter: blur($blur);
+      -webkit-filter: blur($blur);
+      margin: 3em auto 0 auto;
+      position: relative;
+      width: 20em;
+      height: 12em;
+      animation: firefade 800ms ease-in forwards;
+    }
+    .particle {
+      animation: rise $dur ease-in infinite;
+      background-image: radial-gradient($fireColor 20%,$fireColorT 70%);
+      border-radius: 50%;
+      mix-blend-mode: screen;
+      opacity: 0;
+      position: absolute;
+      bottom: 0;
+      width: $partSize;
+      height: $partSize;
+      // spread particles out in time and x-position to get desired effect
+      @for $p from 1 through $parts {
+        &:nth-of-type(#{$p}) {
+          animation-delay: $dur * random();
+          left: calc((100% - #{$partSize}) * #{($p - 1)/$parts});
+        }
+      }
+    }
+
+    @keyframes firefade{
+      0%{
+        opacity: 0;
+      }
+      100%{
+        opacity: 1;
+      }
+    }
+    @keyframes rise {
+      from {
+        opacity: 0;
+        transform: translateY(0) scale(1);
+      }
+      25% {
+        opacity: 1;
+      }
+      to {
+        opacity: 0;
+        transform: translateY(-10em) scale(0);
+      }
+    }
     
     @media only screen and (max-width: 1100px){
       .client-section-title{

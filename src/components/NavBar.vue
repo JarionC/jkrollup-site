@@ -43,17 +43,18 @@
         <div class="cart-menu-quant">{{ cartQuant }} items in Cart</div>
         <div class="cart-menu-list" v-for="item in cartItems" :key="item.productId">
           <div class="cart-item">
-            <div class="cart-item-thumbnail" :style="'background: url(' + require(item.thumbnailUrl) + ')'"></div>
+            <div class="cart-item-thumbnail" :style="'background-image: url(' + item.thumbnailUrl + ')'"></div>
             <div class="cart-item-text">
               <div class="cart-item-display">{{ item.displayName }}</div>
-              <div class="cart-item-price">${{ item.price }}</div>
+              <div class="cart-item-price">${{ parseFloat(item.price).toFixed(2) }}</div>
             </div>
             <div class="cart-item-quantity">x{{ item.quantity }}</div>
           </div>
         </div>
         <div class="cart-menu-message">{{ cartMenuMessage }}</div>
-        <div class="cart-menu-total">Total : ${{ cartTotalPrice }}</div>
-        <div v-bind:class="{'active': (cartHasItems)}" class="cart-menu-checkout">Checkout</div>
+        <div class="cart-menu-total">Total : ${{ parseFloat(cartTotalPrice).toFixed(2) }}</div>
+        <div class="cart-menu-clear" v-on:click="clearCart"><i class="fa-solid fa-eraser"></i>Clear Cart</div>
+        <div v-bind:class="{'active': (cartHasItems)}" class="cart-menu-checkout"> <i class="fa-solid fa-check-square"></i>Checkout</div>
       </div>
     </div>
   </div>
@@ -83,7 +84,7 @@ export default {
         return this.$store.getters.cartQuantity;
       },
       cartItems: function(){
-        return this.$store.getters.cartContent;
+        return this.$store.getters.cartContents;
       },
     },
     mounted: function(){
@@ -96,23 +97,27 @@ export default {
         this.menuHovering = false;
       },
       navigateHome(){
-        this.$router.push("home").catch(()=>{});
+        this.$router.push({path: "/home"}).catch(()=>{});
       },
 
       navigateCustom(){
-        this.$router.push("customrequest").catch(()=>{});
+        this.$router.push({path: "/customrequest"}).catch(()=>{});
       },
 
       navigateContact(){
-        this.$router.push("contact").catch(()=>{});
+        this.$router.push({path: "/contact"}).catch(()=>{});
       },
 
       navigateAbout(){
-        this.$router.push("about").catch(()=>{});
+        this.$router.push({path: "/about"}).catch(()=>{});
       },
 
       navigateProducts(){
-        this.$router.push("products").catch(()=>{});
+        this.$router.push({path: "/products"}).catch(()=>{});
+      },
+
+      clearCart(){
+        this.$store.dispatch("clearCart");
       }
 
 
@@ -131,6 +136,7 @@ export default {
     position: relative;
     z-index: 4;
     color:white;
+    height:42px
   }
   .nav-title{
     color:transparent;
@@ -267,7 +273,12 @@ export default {
     width:100%;
     max-height:250px;
     overflow-x:hidden;
-    overflow-y:scroll;
+    overflow-y:auto;
+    margin-top:1em;
+    display:flex;
+    flex-direction: column;
+    gap: .2em;
+    box-sizing: border-box;
   }
 
   .cart-item{
@@ -276,28 +287,39 @@ export default {
     flex-direction: row;
     padding:.3em;
     align-items: center;
-    justify-content: center;
+    justify-content: space-between;
+    border: .08em solid #777;
+    border-radius: .2em;
+    box-sizing: border-box;
   }
   .cart-item-thumbnail{
-
+    background-size:contain;
+    background-position: center center;
+    background-repeat: no-repeat;
+    width: 3em;
+    height: 3em;
   }
   .cart-item-text{
     display:flex;
     flex-direction:column;
+    align-items: start;
   }
   .cart-item-display{
-    font-weight:bold
+    font-weight:bold;
+    font-size: .8em;
+    text-overflow: ellipsis;
   }
   
   .cart-item-price{
-
+    font-size: .6em;
   }
-  .cart-item-quanity{
-
+  .cart-item-quantity{
+    font-weight: bold;
+    font-size: .7em;
   }
   .cart-menu-checkout{
     width:100%;
-    padding:.5em;
+    padding:.5em 1em .5em .5em;
     color:white;
     border-radius:.3em;
     box-sizing: border-box;
@@ -306,12 +328,46 @@ export default {
     font-weight:bold;
     font-size: 1em;
     margin-top:1em;
+    display:flex;
+    flex-direction: row;
+    justify-content:space-between;
+    gap: .2em;
+    transition: all 200ms ease-in-out; 
+  }
+
+  .cart-menu-clear{
+    width:100%;
+    padding:.5em 1em .5em .5em;
+    color:black;
+    border-radius:.3em;
+    box-sizing: border-box;
+    cursor:pointer;
+    background-color: orange;
+    font-weight:bold;
+    font-size: 1em;
+    margin-top:1em;
+    display:flex;
+    flex-direction: row;
+    justify-content:space-between;
+    gap: .2em;
+    -webkit-text-stroke: unset;
+    transition: all 200ms ease-in-out; 
+  }
+
+  .cart-menu-checkout:hover{
+    box-shadow: 2px 2px black;
+    transition: all 200ms ease-in-out; 
+  }
+
+  .cart-menu-clear:hover{
+    box-shadow: 2px 2px black;
+    transition: all 200ms ease-in-out; 
   }
 
   .cart-menu-checkout.active{
 
     background-color:blue;
-    cursor:pointer
+    cursor:pointer;
   }
   .cart-menu-total{
     margin-top: 2em;
@@ -428,7 +484,6 @@ export default {
 
     .cart-menu-checkout{
     width:100%;
-    padding:.5em;
     color:white;
     border-radius:.3em;
     box-sizing: border-box;
@@ -439,6 +494,24 @@ export default {
     margin-top:1em;
   }
 
+  .cart-menu-clear{
+    width:100%;
+    color:black;
+    border-radius:.3em;
+    box-sizing: border-box;
+    cursor:pointer;
+    font-weight:bold;
+    font-size: 1em;
+    margin-top:1em;
+  }
+  
+  .cart-item{
+    padding: .5em;
+    justify-content: space-around;
+  }
+
+
+
   .cart-menu-checkout.active{
 
     background-color:blue;
@@ -447,6 +520,14 @@ export default {
   .cart-menu-total{
     margin-top: auto;
     font-weight:bold;
+  }
+
+  .cart-item-display{
+    font-size:1.1em;
+  }
+
+  .cart-item-price{
+    font-size: 1em;
   }
   }
 </style>
