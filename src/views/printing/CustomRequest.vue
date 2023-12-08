@@ -1,7 +1,16 @@
 <template>
     <div class="custom-request-container">
-        <div class="custom-request-title">
-            3D Printing Custom Request
+        <div class="custom-request-header">
+            <div class="vid-container">
+                <video autoplay muted loop id="myVideo">
+                    <source src="../../img/3dtimelapse-bg.mp4" type="video/mp4">
+                </video>
+            </div>
+            <div class="custom-request-title-container">
+                <div class="custom-request-title">
+                    3D Printing Custom Request
+                </div>
+            </div>
         </div>
         <div class="custom-request-description">
             Please fill out the form below to request a custom 3D Printing service. We'll be in touch within 48 hours to discuss the service and cost. We currently accept CashApp, PayPal, Money Orders, and limited Cryptocurrencies as payment, but we are are able to consider other payment methods upon request.
@@ -158,7 +167,6 @@ export default {
 <style>
     .custom-request-container{
         color:white;
-        padding: 20px;
     }
     .form-item{
         display:flex;
@@ -176,7 +184,7 @@ export default {
         display:flex;
         flex-direction: column;
         align-items: start;
-        padding:10px;
+        padding:20px;
         margin-left:20px;
     }
     .form-label{
@@ -226,10 +234,66 @@ export default {
         margin-top:50px;
     }
 
+    .custom-request-header{
+        position:relative;
+        height:15em;
+        overflow:hidden;
+    }
+
     .custom-request-title{
         font-size: 2em;
         font-weight:bold;
         text-align: left;
         margin-top:30px;
+        position:absolute;
+        bottom:0px;
+        margin-bottom: 1em;
+        margin-left: 3em;
+    }
+
+    .custom-request-title-container{
+        position:absolute;
+        width:100%;
+        height: 100%;
+        background-color: rgb(0, 0, 0, .7);
+        bottom:0px;
+        left:0px;
+    }
+
+    .vid-container{
+        position:absolute;
+        left:0px;
+        bottom:0px;
+        margin-bottom:-20em;
+    }
+
+    
+
+    @media only screen and (max-width: 768px) {
+        .custom-request-title{
+            margin-left:.5em;
+            margin-right:.5em;
+        }
+        .vid-container{
+        position:absolute;
+        top:0px;
+        margin-bottom:8em;
+        margin-left: 2em;
+    }
+        .vid-container video{
+        /* Make video to at least 100% wide and tall */
+  min-width: 100%; 
+  min-height: 100%; 
+
+  /* Setting width & height to auto prevents the browser from stretching or squishing the video */
+  width: auto;
+  height: auto;
+
+  /* Center the video */
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%);
+    }
     }
 </style>

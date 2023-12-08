@@ -50,7 +50,7 @@
                 if(response.data.value == "success"){
                     console.log("Login Successful");
                     this.$store.commit('SET_ADMIN', this.userName);
-                    this.$router.push("admincontrols").catch(()=>{});
+                    this.$router.push({name: "admincontrols"}).catch(()=>{});
                 }
                 else{
                     console.log("Login Failed.")

@@ -18,6 +18,7 @@
                     <input type="text" v-model="newProductDimensions" placeholder="Dimensions" />
                     <input type="text" v-model="newProductMaterial" placeholder="Material" />
                     <input type="text" v-model="newProductWeight" placeholder="Weight" />
+                    <input type="text" v-model="newDisplayData" placeholder="Display Data" />
                     <div>
                         <div>Available</div>
                         <input type="checkbox" v-model="newProductAvailable" placeholder="Available" />
@@ -69,6 +70,10 @@
                             <input  type="text" class="listed-product-tags" :disabled="!product.editingEnabled" v-model="product.tags"/>
                         </div>
                         <div class="listed-field">
+                            <div class="field-label">Display Data </div>
+                            <input  type="text" class="listed-product-displaydata" :disabled="!product.editingEnabled" v-model="product.displayData"/>
+                        </div>
+                        <div class="listed-field">
                             <div class="field-label">Available </div>
                             <input  type="checkbox" class="listed-product-available" :disabled="!product.editingEnabled" v-model="product.available"/>
                         </div>
@@ -115,6 +120,7 @@
         newProductDimensions: "",
         newProductMaterial: "",
         newProductWeight: null,
+        newProductDisplayData: "",
         newProductVisible: false
 
       };
@@ -128,7 +134,7 @@
             response.data.forEach(function(part, index, theArray){
                 theArray[index]['editingEnabled'] = false;
             })
-            self.products = response.data;   
+            self.products = response.data; 
             self.loadingProducts = false;
         }).catch(function(e){
             
@@ -173,6 +179,7 @@
             this.newProductThumbnailUrl = "";
             this.newProductDimensions = "";
             this.newProductMaterial = "";
+            this.newProductDisplayData = "";
             this.newProductWeight = null;
             this.newProductVisible = false;
 
@@ -194,6 +201,7 @@
             newProduct['material'] = this.newProductMaterial;
             newProduct['weight'] = parseFloat(this.newProductWeight);
             newProduct['visible'] = this.newProductVisible;
+            newProduct['displayData'] = this.newProductDisplayData;
 
             apiClient.createProduct(newProduct).then(function(response){
                 apiClient.getProducts().then(function(response){

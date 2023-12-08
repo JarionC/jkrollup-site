@@ -230,25 +230,56 @@
       display:inline-block;
       @for $s from 1 through $spans {
         &:nth-of-type(#{$s}) {
-          margin-bottom: ((100 * random()) - 400) + px;
+          margin-bottom: ((200 * random()) - 500) + px;
           opacity: .01 * random() - .5;
-          filter: blur(.3 * random() + em);
-          -webkit-filter: blur(.3 * random() + em);
+          filter: blur((.05 + (.2 * random())) + em);
+          -webkit-filter: blur((.05 + (.2 * random())) + em);
+          //transform: skewX((90 * random()) + deg);
+          //transform: rotate(random() * 180);
         }
       }
+      
+     // transform: skewX((360 * random()) + deg);
       animation: titleResolve 4s forwards;
       animation-delay: 1s;
     }
 
     @keyframes titleResolve{
       0%{
-
       }
+      /*10%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      20%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      30%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      40%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      50%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      60%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      70%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      80%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }
+      90%{
+        transform: skewX((50 - (random() * 100)) + deg);
+      }*/
       100%{
         margin-bottom: 0px;
         opacity: 1;
         filter: blur(0em);
         -webkit-filter: blur(0em);
+        //transform:none;
       }
     }
 

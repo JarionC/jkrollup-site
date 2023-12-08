@@ -25,20 +25,48 @@
                             Price: ${{ parseFloat(product.price).toFixed(2) }}
                     </div>
                 </div>
+                <div class="product-options">
+                    <div v-if="displayData && displayData.options && displayData.options.shape" class="product-option shape-option">
+                        <div class="option-title">{{ displayData.options.shape.display + " : " }}</div>
+                        <select class="option-select" v-model="selectedShapeOption">
+                            <option v-for="optionItem in displayData.options.shape.optionList" :key="optionItem.name" v-bind:value="optionItem.name">
+                                {{ optionItem.display }} 
+                            </option>
+                        </select>
+                    </div>
+                    <div v-if="displayData && displayData.options && displayData.options.image" class="product-option image-option">
+                        <div class="option-title">{{ displayData.options.image.display + " : " }}</div>
+                        <select class="option-select" v-model="selectedImageOption">
+                            <option v-for="optionItem in displayData.options.image.optionList" :key="optionItem.name" v-bind:value="optionItem.name">
+                                {{ optionItem.display}}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="custom-image-selection"  v-if="selectedImageIsCustom">
+                        <div class="custom-image-label">Custom Image : </div>
+                        <input type="file" v-if="selectedImageIsCustom" v-on:change="imageUpdated" accept="image/png, image/jpeg"/>
+                    </div>
+                </div>
                 <div class="add-container">
-                    <select  v-model="cartQuantity">
-                        <option>1</option>
-                        <option>2</option>
-                        <option>3</option>
-                        <option>4</option>
-                        <option>5</option>
-                        <option>6</option>
-                        <option>7</option>
-                        <option>8</option>
-                        <option>9</option>
-                        <option>10</option>
-                    </select>
-                    <div class="product-add-button" v-on:click="addToCart">
+                    <div class="quantity-container">
+                        <div class="quantity-label">Quantity : </div>
+                        <select  v-model="cartQuantity">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                            <option>6</option>
+                            <option>7</option>
+                            <option>8</option>
+                            <option>9</option>
+                            <option>10</option>
+                        </select>
+                    </div>
+                    <div class="form-error">
+                        {{ formErrorMessage }}
+                    </div>
+                    <div class="product-add-button" :class="{'disabled': !formValidated}" v-on:click="addToCart">
                         Add To Cart
                     </div>
                 </div>
@@ -62,7 +90,12 @@ export default {
             productMessage: "",
             productId: "",
             product: {},
-            cartQuantity: 1
+            displayData: {},
+            cartQuantity: 1,
+            selectedShapeOption: "",
+            selectedImageOption: "",
+            imageFile: ""
+
         };
       },
       created(){
@@ -70,15 +103,54 @@ export default {
         this.productId = this.$route.params.productId;
         var self = this;
         apiClient.getProduct(this.productId).then( function(response){  
-            self.product = response.data;        
+            self.product = response.data;  
+            
+            if(self.product.displayData){
+                self.displayData = JSON.parse(self.product.displayData);
+                console.log("data", self.displayData);
+            }
+
             self.loadingProduct = false;
+
+            
         }).catch( function (error){
             console.error(error);
             self.loadingProduct = false;
         })
       },
     computed: {
-        
+        selectedImageIsCustom(){
+            return this.selectedImageOption == 'custom';
+        },
+        formValidated: function(){
+            if(this.displayData && this.displayData.options && this.displayData.options.shape){
+                if(!this.selectedShapeOption){
+                    return false;
+                }
+            }
+            if(this.displayData && this.displayData.options && this.displayData.options.image){
+                if(!this.selectedImageOption || (this.selectedImageOption == 'custom' && !this.imageFile)){
+                    return false;
+                }
+            }
+            return true;
+        },
+        formErrorMessage: function(){
+            if(this.displayData && this.displayData.options && this.displayData.options.shape){
+                if(!this.selectedShapeOption){
+                    return "Please select a shape.";
+                }
+            }
+            if(this.displayData && this.displayData.options && this.displayData.options.image){
+                if(!this.selectedImageOption){
+                    return "Please select an image.";
+                }
+                if(this.selectedImageOption == 'custom' && !this.imageFile){
+                    return "Please upload an image for your custom design.";
+                }
+            }
+            return "";
+        }
     },
     mounted: function (){
         
@@ -97,9 +169,28 @@ export default {
             }
         },
         addToCart: function(){
+            if(!this.formValidated){
+                return;
+            }
             var cartItem = this.product;
             cartItem["quantity"] = parseInt(this.cartQuantity);
-            this.$store.dispatch('addCartItem', cartItem);
+
+            if(this.selectedShapeOption){
+                cartItem["shape"] = this.displayData.options.shape.optionList.find(x => x.name == this.selectedShapeOption);
+                cartItem["shape"]["label"] = this.displayData.options.shape.display;
+            }
+            if(this.selectedImageOption){
+                cartItem["image"] = this.displayData.options.image.optionList.find(x => x.name == this.selectedImageOption);
+                cartItem["image"]["label"] = this.displayData.options.image.display;
+                cartItem["image"]["imageFile"] = this.imageFile;
+            }
+            var item = {...cartItem};
+            this.$store.dispatch('addCartItem', item);
+        },
+        imageUpdated(files){
+            var file = files.target.files[0];
+            debugger;
+            this.imageFile = file;
         }
     }
   }
@@ -111,7 +202,7 @@ export default {
         height: 100%;
         text-align : left;
         color: white;
-        padding: 5em 15em 5em 15em;
+        padding: 5em 18vw 5em 18vw;
         display:flex;
         flex-direction: column;
         align-items:center;
@@ -123,7 +214,8 @@ export default {
         flex-direction:row;
         width:100%;
         box-sizing: border-box;
-        justify-content: center;
+        justify-content: space-between;
+        gap: 4em;
     }
     .product-data{
         display:flex;
@@ -159,10 +251,19 @@ export default {
     }
 
     .add-container{
-        margin-top:2em;
+    }
+    .quantity-container{
+        display:flex;
+        flex-direction: row;
+        gap: .5em;
+    }
+
+    .form-error{
+        margin-top: 1em;
+        font-size: .8em;
+        color: rgb(255, 0, 111);
     }
     .product-add-button{
-        margin-top:1em;
         padding: .5em;
         font-weight: bold;
         font-size: 1.2em;
@@ -174,6 +275,42 @@ export default {
         justify-content: center;
         align-items: center;
         cursor: pointer;
+        transition: all 200ms ease-in-out;
+    }
+
+    .product-add-button.disabled{
+        background-color: #555;
+        cursor:not-allowed;
+        transition: all 200ms ease-in-out;
+    }
+
+    .product-options{
+        margin-top:2em;
+
+    }
+
+    .product-option{
+        display:flex;
+        flex-direction: row;
+        gap:.5em;
+        margin-bottom:.2em;
+    }
+
+    .custom-image-selection{
+        display:flex;
+        flex-direction: column;
+        gap: .5em;
+    }
+
+    .option-title{
+        font-size:.9em;
+    }
+    .custom-image-label{
+        font-size:.9em;
+    }
+
+    .quantity-label{
+        font-size:.9em;
     }
     
   @media only screen and (max-width: 768px) {

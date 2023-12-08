@@ -63,8 +63,18 @@ export default {
     formData.append("material", product.material);
     formData.append("weight", product.weight);
     formData.append("visible", product.visible);
+    formData.append("displayData", product.displayData);
 
     return apiClient.post(`/product/update/${product.productId}`, formData);
+  },
+
+  calculateShipping(shippingTo, lineItems){
+    var formData = new FormData();
+
+    formData.append("shippingTo", shippingTo);
+    formData.append("lineItems", lineItems);
+
+    return apiClient.post('/shipping/estimate', formData);
   },
 
   updateProductByProp(productId, propName, propValue){

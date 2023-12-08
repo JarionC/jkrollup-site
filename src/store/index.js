@@ -5,41 +5,65 @@ import Vuex from 'vuex'
 import Cookies from 'js-cookie'
 import signin from '../api/signin'
 import signup from '../api/signup'
+import utils from '../utils'
+import storage from './storage'
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    user: Cookies.get('user') ? JSON.parse(Cookies.get('user')) : null,
-    cart: Cookies.get('cart') ? JSON.parse(Cookies.get('cart')) : [],
-    admin: Cookies.get('admin') ? Cookies.get('admin') : null
+    user: storage.get('user') ? storage.get('user') : null,
+    cart: storage.get('cart') ? storage.get('cart') : [],
+    admin: storage.get('admin') ? storage.get('admin') : null
   },
   mutations: {
     SET_ADMIN(state, admin){
       state.admin = admin;
-      Cookies.set('admin', admin, {expires : 1/12});
+      storage.set('admin', admin, 120);
     },
     SET_USER(state, user) {
       state.user = user;
-      Cookies.set('user', JSON.stringify(user), { expires: 1/12 }); // Set cookie to expire in 2 hours
+      storage.set('user', user, 120); // Set cookie to expire in 2 hours
     },
     CLEAR_USER(state) {
       state.user = null;
-      Cookies.remove('user');
+      storage.remove('user');
     },
     SET_CART(state, cart){
       state.cart = cart;
-      Cookies.set('cart', JSON.stringify(cart), { expires: 1/12 });
+      storage.set('cart', cart, 120);
     },
     CART_ADD(state, cartItem){
+
       var cartItemIndex = state.cart.findIndex( x => x.productId === cartItem.productId);
+      var foundMatch = false;
       if(cartItemIndex == -1){
+        cartItem['itemId'] = state.cart.length + 1;
         state.cart.push(cartItem);
       }
       else{
-        state.cart[cartItemIndex].quantity = state.cart[cartItemIndex].quantity + cartItem.quantity;
+
+        state.cart.forEach((element, index) => {
+          //check custom fields
+          if(utils.productsAreEqual(element, cartItem)){
+            var temp = state.cart[cartItemIndex];
+            temp.quantity = state.cart[cartItemIndex].quantity + cartItem.quantity;
+            state.cart.splice(cartItemIndex, 1);
+            state.cart.push(temp);
+            foundMatch = true;
+          }
+        });
+
+        if(!foundMatch){
+          cartItem['itemId'] = state.cart.length + 1;
+          state.cart.push(cartItem);
+        }
+        
+        //Vue.set(state.cart[cartItemIndex], state.cart[cartItemIndex]['quantity'], (state.cart[cartItemIndex].quantity + cartItem.quantity));
+        //state.cart[cartItemIndex].quantity = state.cart[cartItemIndex].quantity + cartItem.quantity;
       }
-      Cookies.set('cart', JSON.stringify(state.cart), { expires: 1/12 });
+      storage.set('cart', state.cart, 120);
+      
     },
 
     CART_REMOVE(state, cartItem){
@@ -49,12 +73,12 @@ export default new Vuex.Store({
         state.cart.splice(cartItemIndex, 1);
       }
       
-      Cookies.set('cart', JSON.stringify(state.cart), { expires: 1/12 });
+      storage.set('cart', state.cart, 120);
     },
 
     CLEAR_CART(state){
       state.cart = [];
-      Cookies.remove('cart');
+      storage.remove('cart');
     }
   },
   getters :{
@@ -65,6 +89,7 @@ export default new Vuex.Store({
       if(!state.cart || state.cart.length == 0){
         return 0;
       }
+      
       var quantityArray = state.cart.map(p => (p.price * p.quantity));
 
       var sum = quantityArray.reduce((accumulator, currentValue) => {
@@ -77,6 +102,7 @@ export default new Vuex.Store({
       if(!state.cart || state.cart.length == 0){
         return 0;
       }
+      
       var quantityArray = state.cart.map(p => p.quantity);
 
       var sum = quantityArray.reduce((accumulator, currentValue) => {

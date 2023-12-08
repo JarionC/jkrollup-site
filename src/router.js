@@ -12,11 +12,12 @@ import ProductsView from './views/printing/ProductsView';
 import ProductView from './views/products/ProductView';
 import AdminLogin from './views/admin/AdminLogin';
 import AdminControls from './views/admin/AdminControls';
+import CheckoutView from './views/checkout/CheckoutView';
 
 Vue.use(Router);
 
 const router = new Router({
-  mode: 'hash',
+  mode: 'history',
   routes: [
     //{ path: '/', redirect: { name: 'ats' } },
     { path: '/', component: HomePage,  name: 'home' },
@@ -31,6 +32,7 @@ const router = new Router({
     { path: '/sign-up', component: SignUp, name: 'signup' },
     { path: '/admin', component: AdminLogin, name: 'admin' },
     { path: '/admin/controls', component: AdminControls, name: 'admincontrols' },
+    { path: '/checkout', component: CheckoutView, name: 'checkout' },
     { path: '/registration/:registrationId', component: RegistrationView, name: 'registration' }
 
   ]
