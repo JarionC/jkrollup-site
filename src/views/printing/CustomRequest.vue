@@ -3,7 +3,7 @@
         <div class="custom-request-header">
             <div class="vid-container">
                 <video autoplay muted loop id="myVideo">
-                    <source src="../../img/3dtimelapse-bg.mp4" type="video/mp4">
+                    <source src="../../img/3dtimelapse-bg_v2.mp4" type="video/mp4">
                 </video>
             </div>
             <div class="custom-request-title-container">
@@ -13,7 +13,7 @@
             </div>
         </div>
         <div class="custom-request-description">
-            Please fill out the form below to request a custom 3D Printing service. We'll be in touch within 48 hours to discuss the service and cost. We currently accept CashApp, PayPal, Money Orders, and limited Cryptocurrencies as payment, but we are are able to consider other payment methods upon request.
+            Please fill out the form below to request a custom 3D Printing and crafting service. We'll be in touch within 48 hours to discuss the service, detailing, and cost. We currently accept CashApp, PayPal, Money Orders, and limited Cryptocurrencies as payment, but we are are able to consider other payment methods upon request.
         </div>
         <div class="custom-request-form-container">
             <div class="form-item">
@@ -39,7 +39,7 @@
                     3D Model (Optional)
                 </div>
                 <div class="form-description">
-                    Please upload as a ZIP file. While STL is the most convenient format, we can work with a wide range of formats : FBL, OBJ, etc.
+                    Please upload as a ZIP file. While STL is the most convenient format, we can work with a wide range of formats : FBL, OBJ, etc. We can also work with ideas you would like to see come to life!
                 </div>
                 <input  v-on:change="fileUpdated" accept=".zip" type="file" class="form-input" v-bind:disabled="formDisabled"/>
             </div>
