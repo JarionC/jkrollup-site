@@ -21,7 +21,7 @@
                             Material: {{ product.material }}
                     </div>
                     <div class="product-weight">
-                            Weight: {{ product.price }}lbs
+                            Weight: {{ product.weight }}lbs
                     </div>
                     <div class="product-dimensions">
                             Dimensions(inches): {{ getDimensions(product.dimensions) }}
