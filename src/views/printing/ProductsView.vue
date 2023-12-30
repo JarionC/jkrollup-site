@@ -12,7 +12,7 @@
         <div class="products-holder">
             <div v-for="product in products" v-on:click="goToProductPage(product.productId)" :key="product.productId" class="product-container">
                 
-                <div class="product-thumbnail" :style="'background-image: url(' + product.thumbnailUrl + ')'"></div>
+                <div class="product-thumbnail" :style="'background-image: url(' + imageDomain + product.thumbnailUrl + ')'"></div>
                 <div class="product-display">{{ product.displayName }}</div>
                 <div class="product-description">{{ product.description }}</div>
                 <div class="product-price">${{ parseFloat(product.price).toFixed(2) }}</div>
@@ -35,7 +35,8 @@ export default {
             loadingProducts: true,
             productError: false,
             productListMessage: "Loading Products...",
-            products: []
+            products: [],
+            imageDomain: process.env.VUE_APP_IMAGE_DOMAIN
         };
       },
       created(){

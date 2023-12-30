@@ -13,6 +13,10 @@
                     <input type="text" v-model="newProductDisplayName" placeholder="DisplayName" />
                     <input type="text" v-model="newProductDescription" placeholder="Description" />
                     <input type="text" v-model="newProductTags" placeholder="Tags" />
+                    
+                    <input  v-on:change="mainFileUpdated" name="mainImg" type="file" multiple/>
+                    <input  v-on:change="filesUpdated" name="imgFiles" type="file" multiple/>
+                       
                     <input type="text" v-model="newProductImageUrl" placeholder="ImageUrl" />
                     <input type="text" v-model="newProductThumbnailUrl" placeholder="ThumbnailUrl" />
                     <input type="text" v-model="newProductDimensions" placeholder="Dimensions" />
@@ -39,8 +43,12 @@
                         </div>
                         <div class="image-field">
                             <div class="field-label">Image </div>
-                            <div type="text"  class="listed-product-image" :style="'background-image: url(' + product.imageUrl + ')'"></div>
+                            <div type="text"  class="listed-product-image" :style="'background-image: url(' + imageDomain + product.imageUrl + ')'"></div>
                         </div>
+                        <div class = "listed-field">
+                            <div class="field-label">Images</div>
+                            
+                             </div>
                         <div class="listed-field">
                             <div class="field-label">Image Url </div>
                             <input  type="text" class="listed-product-image-url" :disabled="!product.editingEnabled" v-model="product.imageUrl"/>
@@ -121,7 +129,11 @@
         newProductMaterial: "",
         newProductWeight: null,
         newProductDisplayData: "",
-        newProductVisible: false
+        newProductVisible: false,
+        newProductMainImage: {},
+        newProductImageFiles: [],
+        newDisplayData: "",
+        imageDomain: process.env.VUE_APP_IMAGE_DOMAIN
 
       };
     },
@@ -157,6 +169,12 @@
         }
       },
       methods: {
+        mainFileUpdated(event){
+            this.newProductMainImage = event.target.files[0];
+        },
+        filesUpdated(event){
+            this.newProductImageFiles = event.target.files;
+        },
         editProduct: function(product){
             var index = this.products.findIndex( x => x.productId === product.productId)
             this.products[index]['editingEnabled'] = true;
@@ -180,6 +198,8 @@
             this.newProductDimensions = "";
             this.newProductMaterial = "";
             this.newProductDisplayData = "";
+            this.newProductImageFiles = [];
+            this.newProductMainImage = {};
             this.newProductWeight = null;
             this.newProductVisible = false;
 
@@ -188,7 +208,6 @@
         saveNewProduct: function(){
             var self = this;
             var newProduct = {};
-
             newProduct['name'] = this.newProductName;
             newProduct['available'] = this.newProductAvailable;
             newProduct['price'] = parseFloat(this.newProductPrice);
@@ -202,6 +221,8 @@
             newProduct['weight'] = parseFloat(this.newProductWeight);
             newProduct['visible'] = this.newProductVisible;
             newProduct['displayData'] = this.newProductDisplayData;
+            newProduct['imageFiles'] = this.newProductImageFiles;
+            newProduct['mainImg'] = this.newProductMainImage;
 
             apiClient.createProduct(newProduct).then(function(response){
                 apiClient.getProducts().then(function(response){

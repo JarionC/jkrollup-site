@@ -1,8 +1,13 @@
 <template>
     <div class="product-container">
         <div class="head-container">
-            <div class="product-image" :style="'background-image: url(' + product.imageUrl+ ')'">
-                
+            <div class="product-image" :style="'background-image: url(' + productImageUrl + ')'">
+                <div class="image-links-container">
+                    <div class="image-links-row">
+                        <div class="image-link" v-on:click="setSelectedImage(image.name)" v-bind:class="{'selected': image.selected}" v-for="image in imageArray" :key="image.name" :style="'background-image: url(' + imageDomain + image.name + ')'">
+                        </div>
+                    </div>
+                </div>
             </div>
             <div class="product-data">
                 <div class="product-title">
@@ -52,7 +57,7 @@
                         <div class="quantity-label">Quantity : </div>
                         <select  v-model="cartQuantity">
                             <option>1</option>
-                            <option>2</option>
+                            <!--<option>2</option>
                             <option>3</option>
                             <option>4</option>
                             <option>5</option>
@@ -60,14 +65,14 @@
                             <option>7</option>
                             <option>8</option>
                             <option>9</option>
-                            <option>10</option>
+                            <option>10</option>-->
                         </select>
                     </div>
                     <div class="form-error">
                         {{ formErrorMessage }}
                     </div>
-                    <div class="product-add-button" :class="{'disabled': !formValidated}" v-on:click="addToCart">
-                        Add To Cart
+                    <div class="product-add-button" :class="{'disabled': !formValidated || !product.available}" v-on:click="addToCart">
+                        {{!product.available ? "Unavailable" : "Add To Cart"}}
                     </div>
                 </div>
             </div>
@@ -94,12 +99,13 @@ export default {
             cartQuantity: 1,
             selectedShapeOption: "",
             selectedImageOption: "",
-            imageFile: ""
+            imageFile: "",
+            imageArray: [],
+            imageDomain: process.env.VUE_APP_IMAGE_DOMAIN
 
         };
       },
       created(){
-        
         this.productId = this.$route.params.productId;
         var self = this;
         apiClient.getProduct(this.productId).then( function(response){  
@@ -109,7 +115,13 @@ export default {
                 self.displayData = JSON.parse(self.product.displayData);
                 console.log("data", self.displayData);
             }
+            self.imageArray = response.data.ProductImages.map(obj => ({
+                name : obj.name,
+                description : obj.description,
+                isMain : obj.isMain,
+                selected : obj.isMain
 
+            }))
             self.loadingProduct = false;
 
             
@@ -119,6 +131,13 @@ export default {
         })
       },
     computed: {
+        productImageUrl(){
+            var selectedProduct = this.imageArray.find(obj => obj.selected == true);
+            if(selectedProduct){
+                return this.imageDomain + selectedProduct.name;
+            }
+            return "";
+        },
         selectedImageIsCustom(){
             return this.selectedImageOption == 'custom';
         },
@@ -156,6 +175,16 @@ export default {
         
     },
     methods: {
+        setSelectedImage: function(name){
+            this.imageArray.forEach(image => {
+                if(image.name == name){
+                    image.selected = true;
+                }
+                else{
+                    image.selected = false;
+                }
+            })
+        },
         getDimensions:function(rawD){
             if(!rawD){
                 return "";
@@ -169,7 +198,7 @@ export default {
             }
         },
         addToCart: function(){
-            if(!this.formValidated){
+            if(!this.formValidated || !this.product.available){
                 return;
             }
             var cartItem = this.product;
@@ -189,7 +218,6 @@ export default {
         },
         imageUpdated(files){
             var file = files.target.files[0];
-            debugger;
             this.imageFile = file;
         }
     }
@@ -240,6 +268,7 @@ export default {
         background-size:contain;
         background-position: center center;
         background-repeat: no-repeat;
+        position:relative;
     }
 
     .product-description{
@@ -312,8 +341,79 @@ export default {
     .quantity-label{
         font-size:.9em;
     }
+
+    .image-links-container{
+        width:100%;
+        height: 20%;
+        position:absolute;
+        bottom:0px;
+        overflow-x : scroll;
+        overflow-y : hidden;
+        opacity: .3;
+        transition: all 200ms ease-in-out;
+    }
+
+    .image-links-container:hover{
+        opacity: 1;
+        transition: all 200ms ease-in-out;
+    }
+
+    .image-links-container::-webkit-scrollbar{
+        width: 1px;
+        height:.3em;
+        z-index: 5;
+    }
+    .image-links-container::-webkit-scrollbar-track{
+        background-color: transparent;
+    }
+
+    .image-links-container::-webkit-scrollbar-thumb{
+        background-color: #88888870;
+    }
+
+    .image-links-container::-webkit-scrollbar-thumb:hover{
+        background-color: #888888;
+    }
+    .image-links-row{
+        height:100%;
+        width:auto;
+        display:flex;
+        flex-direction: row;
+        padding:.3em;
+        gap: 5px;
+        position:absolute;
+        box-sizing: border-box;
+    }
+
+    .image-link{
+        height:100%;
+        width: 100px;
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center center;
+        cursor: pointer;
+        box-sizing: border-box;
+        border-radius: 5px;
+        background-color: none;
+        transition: all 300ms ease-in-out;
+
+    }
+
+    .image-link.selected{
+        background-color: #FFFFFF40;
+        transition: all 300ms ease-in-out;
+    }
+
+    .image-link:hover{
+        background-color: #FFFFFF40;
+        transition: all 300ms ease-in-out;
+    }
     
   @media only screen and (max-width: 768px) {
+
+    .image-link{
+        width: 2em;
+    }
     .product-container{
         padding: 1em;
     }
@@ -322,11 +422,12 @@ export default {
         align-items: center;
     }
     .product-image{
-        width: 10em;
-        height:10em;
+        width: 15em;
+        height:15em;
+        margin-top:2em;
     }
     .product-title{
-        margin-top: 1em;
+        margin-top: .5em;
     }
     .product-data{
         margin-left:0px;

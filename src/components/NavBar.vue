@@ -50,7 +50,7 @@
         <div class="cart-menu-list">
           <div class="cart-item-container" v-for="item in cartItems" :key="item.itemId">
             <div class="cart-item">
-              <div class="cart-item-thumbnail" :style="'background-image: url(' + item.thumbnailUrl + ')'"></div>
+              <div class="cart-item-thumbnail" :style="'background-image: url(' + imageDomain + item.thumbnailUrl + ')'"></div>
               <div class="cart-item-text">
                 <div class="cart-item-display">{{ item.displayName }}</div>
                 <div class="cart-item-price">${{ parseFloat(item.price).toFixed(2) }}</div>
@@ -82,7 +82,8 @@ export default {
         return {
          cartMenuMessage: "",
          cartHovering: false,
-         menuHovering: false
+         menuHovering: false,
+         imageDomain: process.env.VUE_APP_IMAGE_DOMAIN
         };
       },
   

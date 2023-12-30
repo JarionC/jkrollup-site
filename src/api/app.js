@@ -36,8 +36,15 @@ export default {
     formData.append("material", product.material);
     formData.append("weight", product.weight);
     formData.append("visible", product.visible);
+    formData.append("mainImg", product.mainImg);
 
-    return apiClient.post('/product/create', formData);
+    for(let i = 0; i < product.imageFiles.length; i++){
+      formData.append("imgFiles", product.imageFiles[i]);
+    }
+
+    return apiClient.post('/product/create', formData, {headers: {
+      'Content-Type': 'multipart/form-data'
+    }});
   },
 
   getProduct(productId){
@@ -64,6 +71,7 @@ export default {
     formData.append("weight", product.weight);
     formData.append("visible", product.visible);
     formData.append("displayData", product.displayData);
+    
 
     return apiClient.post(`/product/update/${product.productId}`, formData);
   },
