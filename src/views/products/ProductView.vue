@@ -56,16 +56,8 @@
                     <div class="quantity-container">
                         <div class="quantity-label">Quantity : </div>
                         <select  v-model="cartQuantity">
-                            <option>1</option>
-                            <!--<option>2</option>
-                            <option>3</option>
-                            <option>4</option>
-                            <option>5</option>
-                            <option>6</option>
-                            <option>7</option>
-                            <option>8</option>
-                            <option>9</option>
-                            <option>10</option>-->
+                            <option v-for="op in quantityOptions" :key="op">{{op}}</option>
+                            
                         </select>
                     </div>
                     <div class="form-error">
@@ -101,6 +93,7 @@ export default {
             selectedImageOption: "",
             imageFile: "",
             imageArray: [],
+            quantityOptions: [],
             imageDomain: process.env.VUE_APP_IMAGE_DOMAIN
 
         };
@@ -108,6 +101,9 @@ export default {
       created(){
         this.productId = this.$route.params.productId;
         var self = this;
+        for(let i = 1; i < 101; i++){
+            this.quantityOptions.push(i);
+        }
         apiClient.getProduct(this.productId).then( function(response){  
             self.product = response.data;  
             
