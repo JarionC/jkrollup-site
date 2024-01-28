@@ -1,7 +1,8 @@
 <template>
     <div class="admin-controls-container">
         <div class="admin-controls-title">ADMIN CONTROLS</div>
-        <div class="control-sections">
+        <div v-if="!adminStatus">Login to Admin Account to Edit Admit Settings</div>
+        <div v-if="adminStatus" class="control-sections">
             <div class="product-section">
                 <div class="product-controls-title">PRODUCTS</div>
                 <div class="product-controls">
@@ -110,6 +111,7 @@
   export default {
     data() {
       return {
+        adminStatus: null,
         updatingProduct: false,
         loadingProducts: true,
         loadingOrders: true,
@@ -142,6 +144,11 @@
       },
       created(){  
         var self = this;
+        this.adminStatus = this.$store.state.admin;
+
+        if(!this.adminStatus){
+            return;
+        }
         apiClient.getProducts().then(function(response){
             response.data.forEach(function(part, index, theArray){
                 theArray[index]['editingEnabled'] = false;

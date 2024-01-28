@@ -9,6 +9,13 @@
         <div class="products-message">
                 {{productListMessage}}
         </div>
+        <div class="tentakewls-title">
+        </div>
+        <div class="tentakewls-text">They've been secretly waiting, silently watching, scrupulously planning, and suddenly appearing - The TentaKewls are among us.
+            Soft and flexible, slender and posable - their tendrils are making their way around the globe, collecting our forms to further their 
+            intricate and mysterious master plan. The captivated masses of the world are left with one common question teetering, torridly on the tips of their tongues : 
+            Who's Next?
+        </div>
         <div class="products-holder">
             <div v-for="product in products" v-on:click="goToProductPage(product.productId)" :key="product.productId" class="product-container">
                 
@@ -160,10 +167,34 @@ export default {
         color: green;
     }
 
+    .tentakewls-title{
+        background-image: url('../../img/tentakewl_title_white.png');
+        background-repeat: no-repeat;
+        background-position: center center;
+        background-size: contain;
+        width:100%;
+        height: 12em;
+        padding-right: 2em;
+        padding-left: 2em;
+        box-sizing: border-box;
+        display:flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 4em;
+    }
+
+    .tentakewls-text{
+        padding-right: 2em;
+        padding-left: 2em;
+        margin-top: 2em;
+    }
     @media only screen and (max-width: 768px) {
         .products-holder{
             padding: 1em;
             flex-direction: column;
+        }
+        .tentakewls-title{
+            height: 5em;
         }
     }
 </style>

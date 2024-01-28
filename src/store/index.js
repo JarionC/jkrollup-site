@@ -29,6 +29,10 @@ export default new Vuex.Store({
       state.user = null;
       storage.remove('user');
     },
+    CLEAR_admin(state){
+      state.admin = null;
+      storage.remove('admin');
+    },
     SET_CART(state, cart){
       state.cart = cart;
       storage.set('cart', cart, 120);
@@ -85,6 +89,9 @@ export default new Vuex.Store({
     cartContents(state){
       return state.cart;
     },
+    adminStatus(state){
+      return state.admin;
+    },
     cartTotal(state){
       if(!state.cart || state.cart.length == 0){
         return 0;
@@ -120,6 +127,9 @@ export default new Vuex.Store({
     async register({ commit }, user) {
       const response = await signup.signup(user);
       commit('SET_USER', response.data);
+    },
+    logoutAdmin({ commit }, admin){
+      commit('CLEAR_ADMIN');
     },
     logout({ commit }) {
       commit('CLEAR_USER');
